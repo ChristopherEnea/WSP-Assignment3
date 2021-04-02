@@ -13,66 +13,66 @@ const doActionThatMightFailValidation = async (request, response, action) => {
   }
 };
 
-const getProducts = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const products = await ProductService.getProducts(req.query);
+const getProducts = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const products = await ProductService.getProducts(request.query);
     if (products.length === 0) {
-      return res.sendStatus(404);
+      return response.sendStatus(404);
     }
-    return res.json(products);
+    return response.json(products);
   });
 };
 
-const getProduct = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const getResult = await ProductService.getProduct(req.params.sku);
+const getProduct = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const getResult = await ProductService.getProduct(request.params.sku);
     if (getResult != null) {
-      res.json(getResult);
+      response.json(getResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const createProduct = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    await ProductService.createProduct(req.body);
-    res.sendStatus(201);
+const createProduct = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    await ProductService.createProduct(request.body);
+    response.sendStatus(201);
   });
 };
 
-const replaceProduct = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    await ProductService.replaceProduct(req.params.sku, req.body);
-    return res.sendStatus(200);
+const replaceProduct = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    await ProductService.replaceProduct(request.params.sku, request.body);
+    return response.sendStatus(200);
   });
 };
 
-const modifyProduct = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const patchResult = await ProductService.modifyProduct(req.params.sku, req.body);
+const modifyProduct = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const patchResult = await ProductService.modifyProduct(request.params.sku, request.body);
     if (patchResult != null) {
-      res.json(patchResult);
+      response.json(patchResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const deleteProduct = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const getResult = await ProductService.deleteProduct(req.params.sku);
+const deleteProduct = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const getResult = await ProductService.deleteProduct(request.params.sku);
     if (getResult != null) {
-      res.json(getResult);
+      response.json(getResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const deleteProducts = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    res.json(await ProductService.deleteProducts());
+const deleteProducts = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    response.json(await ProductService.deleteProducts());
   });
 };
 

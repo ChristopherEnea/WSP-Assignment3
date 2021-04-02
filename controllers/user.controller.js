@@ -13,67 +13,66 @@ const doActionThatMightFailValidation = async (request, response, action) => {
   }
 };
 
-const getUsers = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const users = await UserService.getUsers(req.query);
+const getUsers = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const users = await UserService.getUsers(request.query);
     if (users.length === 0) {
-      return res.sendStatus(404);
+      return response.sendStatus(404);
     }
-    return res.json(users);
+    return response.json(users);
   });
 };
 
-const getUser = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const getResult = await UserService.getUser(req.params.ssn);
+const getUser = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const getResult = await UserService.getUser(request.params.ssn);
     if (getResult != null) {
-      res.json(getResult);
+      response.json(getResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const createUser = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    await UserService.createUser(req.body);
-    res.sendStatus(201);
+const createUser = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    await UserService.createUser(request.body);
+    response.sendStatus(201);
   });
 };
 
-const replaceUser = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    // if (req.body == null) { return res.sendStatus(204); }
-    await UserService.replaceUser(req.params.ssn, req.body);
-    return res.sendStatus(200);
+const replaceUser = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    await UserService.replaceUser(request.params.ssn, request.body);
+    return response.sendStatus(200);
   });
 };
 
-const modifyUser = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const patchResult = await UserService.modifyUser(req.params.ssn, req.body);
+const modifyUser = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const patchResult = await UserService.modifyUser(request.params.ssn, request.body);
     if (patchResult != null) {
-      res.json(patchResult);
+      response.json(patchResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const deleteUser = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    const getResult = await UserService.deleteUser(req.params.ssn);
+const deleteUser = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    const getResult = await UserService.deleteUser(request.params.ssn);
     if (getResult != null) {
-      res.json(getResult);
+      response.json(getResult);
     } else {
-      res.sendStatus(404);
+      response.sendStatus(404);
     }
   });
 };
 
-const deleteUsers = async (req, res) => {
-  await doActionThatMightFailValidation(req, res, async () => {
-    res.json(await UserService.deleteUsers());
+const deleteUsers = async (request, response) => {
+  await doActionThatMightFailValidation(request, response, async () => {
+    response.json(await UserService.deleteUsers());
   });
 };
 
