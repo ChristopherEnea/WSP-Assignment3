@@ -1,0 +1,33 @@
+{
+  "name": "homework2",
+  "version": "1.0.0",
+  "description": "Assignment2",
+  "main": "server.js.old",
+  "scripts": {
+    "lint": "eslint */*.js --fix",
+    "start": "node server.js.old"
+  },
+  "keywords": [],
+  "author": "Christopher Enea",
+  "license": "ISC",
+  "dependencies": {
+    "bob-mongoose-currency": "^0.2.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.15"
+  },
+  "devDependencies": {
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChristopherEnea/WSP-Assignment2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ChristopherEnea/WSP-Assignment2/issues"
+  },
+  "homepage": "https://github.com/ChristopherEnea/WSP-Assignment2#readme"
+}
