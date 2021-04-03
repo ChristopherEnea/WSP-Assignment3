@@ -1,3 +1,4 @@
+const StatusCodes = require('http-status-codes');
 const ProductService = require('../services/product.services');
 
 const doActionThatMightFailValidation = async (request, response, action) => {
@@ -8,7 +9,7 @@ const doActionThatMightFailValidation = async (request, response, action) => {
       e.code === 11000
             || e.stack.includes('ValidationError')
             || (e.reason !== undefined && e.reason.code === 'ERR_ASSERTION')
-        ? 400 : 500,
+        ? StatusCodes.BAD_REQUEST : StatusCodes.INTERNAL_SERVER_ERROR,
     );
   }
 };
@@ -17,7 +18,7 @@ const getProducts = async (request, response) => {
   await doActionThatMightFailValidation(request, response, async () => {
     const products = await ProductService.getProducts(request.query);
     if (products.length === 0) {
-      return response.sendStatus(404);
+      return response.sendStatus(StatusCodes.NOT_FOUND);
     }
     return response.json(products);
   });
@@ -29,7 +30,7 @@ const getProduct = async (request, response) => {
     if (getResult != null) {
       response.json(getResult);
     } else {
-      response.sendStatus(404);
+      response.sendStatus(StatusCodes.NOT_FOUND);
     }
   });
 };
@@ -37,14 +38,14 @@ const getProduct = async (request, response) => {
 const createProduct = async (request, response) => {
   await doActionThatMightFailValidation(request, response, async () => {
     await ProductService.createProduct(request.body);
-    response.sendStatus(201);
+    response.sendStatus(StatusCodes.CREATED);
   });
 };
 
 const replaceProduct = async (request, response) => {
   await doActionThatMightFailValidation(request, response, async () => {
     await ProductService.replaceProduct(request.params.sku, request.body);
-    return response.sendStatus(200);
+    return response.sendStatus(StatusCodes.OK);
   });
 };
 
@@ -54,7 +55,7 @@ const modifyProduct = async (request, response) => {
     if (patchResult != null) {
       response.json(patchResult);
     } else {
-      response.sendStatus(404);
+      response.sendStatus(StatusCodes.NOT_FOUND);
     }
   });
 };
@@ -65,7 +66,7 @@ const deleteProduct = async (request, response) => {
     if (getResult != null) {
       response.json(getResult);
     } else {
-      response.sendStatus(404);
+      response.sendStatus(StatusCodes.NOT_FOUND);
     }
   });
 };
