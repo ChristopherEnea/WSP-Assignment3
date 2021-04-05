@@ -19,21 +19,51 @@ function validateTime(incomingTime) {
 
 // todo. add error logging for bad parseInt
 router.all('*', async (request, response, next) => {
-  // console.log('query:', request.query['date-validation']);
-  Object.keys(request.query).forEach((key) => {
-    if (key.toLowerCase() === 'date-validation') {
-      console.log(request.query[key]);
-      console.log(validateTime(Number.parseInt(request.query[key], 10)));
+  const incomingTimes = [];
+
+  console.log('params:', request.query);
+  Object.keys(request.query)
+    .forEach((key) => {
+      if (key.toLowerCase() === 'date-validation') {
+        if (typeof request.query[key] !== 'object') {
+          incomingTimes.push(request.query[key]);
+        } else {
+          request.query[key].forEach((item) => incomingTimes.push(item));
+        }
+      }
+    });
+
+  console.log('headers:', request.header('date-validation'));
+  if (request.header('date-validation')) {
+    request.header('date-validation').split(', ').forEach((item) => incomingTimes.push(item));
+  }
+
+  console.log(incomingTimes);
+
+  if (incomingTimes.length === 0) {
+    response.status(StatusCodes.UNAUTHORIZED);
+    next();
+  } else if (incomingTimes.length === 1) {
+    if (!validateTime(incomingTimes)) {
+      response.status(StatusCodes.UNAUTHORIZED);
+      next();
+    } else {
+      request.DateValidation = incomingTimes;
+      next();
+    }
+  }
+  incomingTimes.forEach((item) => {
+    if (item !== incomingTimes[0]) {
+      response.status(StatusCodes.UNAUTHORIZED);
+      next();
     }
   });
-  // console.log('query:', test);
-  // console.log('header:', request.get('date-validation'));
-  // console.log(validateTime(request.get('date-validation')));
-  if (!request.get('date-validation')) {
-    console.log('no header timestamp');
-  } else if (request.get('date-validation') && !validateTime(request.get('date-validation'))) {
-    console.log('header timestamp out of range');
-  }
+  incomingTimes.forEach((item) => {
+    if (!validateTime(item)) {
+      response.status(StatusCodes.UNAUTHORIZED);
+      next();
+    }
+  });
   next();
 });
 
