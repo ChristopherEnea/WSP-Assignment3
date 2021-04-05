@@ -16,7 +16,7 @@ const app = Express();
 app.use(BodyParser.json());
 app.use('*', ErrorOnDelete);
 app.use('*', DateValidation);
-// app.use('*', Logger);
+app.use('*', Logger);
 app.use('/users', UserRoutes);
 app.use('/products', ProductRoutes);
 // app.all('/', (request, response, next) => {

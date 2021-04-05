@@ -1,21 +1,29 @@
 const express = require('express');
 const BodyParser = require('body-parser');
-const StatusCodes = require('http-status-codes');
 
 const router = express.Router();
 router.use(BodyParser.json());
+const path = require('path');
+const winston = require('winston');
 
-router.all('*', async (request, response, next) => {
-  const log = Object;
-  log.time = Math.round(Date.now() / 1000);
-  log.verb = request.method;
-  log.path = request.url;
-  log.body = request.body;
-  log.query = request.query;
-  log.headers = request.headers;
-  log.DateValidation = request.dateValidation;
-  console.log(log);
-  next();
+const filename = path.join(__dirname, '../logfile.log');
+
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename }),
+  ],
 });
 
-module.exports = router;
+module.exports = router.all('*', async (request, response, next) => {
+  logger.log('info', 'New request', {
+    time: Math.round(Date.now() / 1000),
+    verb: request.method,
+    path: request.url,
+    body: request.body,
+    query: request.query,
+    headers: request.headers,
+    DateValidation: request.dateValidation,
+  });
+  next();
+});
