@@ -25,7 +25,6 @@ function validateTime(incomingTime) {
 router.all('*', async (request, response, next) => {
   const incomingTimes = [];
 
-  // console.log('params:', request.query);
   Object.keys(request.query)
     .forEach((key) => {
       if (key.toLowerCase() === 'date-validation') {
@@ -37,32 +36,27 @@ router.all('*', async (request, response, next) => {
       }
     });
 
-  // console.log('headers:', request.header('date-validation'));
   if (request.header('date-validation')) {
     request.header('date-validation').split(', ').forEach((item) => incomingTimes.push(item));
   }
 
   if (incomingTimes.length === 0) {
-    response.status(StatusCodes.UNAUTHORIZED);
-  } else if (incomingTimes.length === 1) {
+    return response.sendStatus(StatusCodes.UNAUTHORIZED);
+  } if (incomingTimes.length === 1) {
     if (!validateTime(incomingTimes)) {
-      response.status(StatusCodes.UNAUTHORIZED);
+      return response.sendStatus(StatusCodes.UNAUTHORIZED);
     }
     request.DateValidation = incomingTimes;
-    response.status(StatusCodes.OK);
+    next();
   }
   incomingTimes.forEach((item) => {
     if (item !== incomingTimes[0]) {
-      response.status(StatusCodes.UNAUTHORIZED);
+      return response.sendStatus(StatusCodes.UNAUTHORIZED);
     }
   });
-  incomingTimes.forEach((item) => {
-    if (!validateTime(item)) {
-      response.status(StatusCodes.UNAUTHORIZED);
-    }
-    response.status(StatusCodes.OK);
-  });
-  next();
+  if (!validateTime(incomingTimes[0])) {
+    return response.sendStatus(StatusCodes.UNAUTHORIZED);
+  }
 });
 
 module.exports = router;
