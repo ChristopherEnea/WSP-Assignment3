@@ -19,11 +19,7 @@ app.use('*', DateValidation);
 app.use('*', Logger);
 app.use('/users', UserRoutes);
 app.use('/products', ProductRoutes);
-// app.all('/', (request, response, next) => {
-//   console.log('hello');
-//   response.sendStatus(200);
-// });
-app.get('/', (request, response) => response.send('App is working'));
+app.use('/', fiftyfifty);
 
 (async () => {
   await Mongoose.connect(process.env.CONNECTION_STRING, {
