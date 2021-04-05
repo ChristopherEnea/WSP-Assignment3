@@ -5,13 +5,15 @@ const dotenv = require('dotenv');
 const UserRoutes = require('./routes/user.routes');
 const ProductRoutes = require('./routes/product.routes');
 const ErrorOnDelete = require('./middleware/ErrorOnDelete');
+const DateValidation = require('./middleware/DateValidation')
 
 dotenv.config();
 
 const app = Express();
 
 app.use(BodyParser.json());
-app.use('/', ErrorOnDelete);
+app.use('*', ErrorOnDelete);
+app.use('*', DateValidation);
 app.use('/users', UserRoutes);
 app.use('/products', ProductRoutes);
 app.get('/', (request, response) => response.send('App is working'));
