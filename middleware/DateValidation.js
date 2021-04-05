@@ -1,9 +1,7 @@
 const express = require('express');
-const BodyParser = require('body-parser');
 const StatusCodes = require('http-status-codes');
 
 const router = express.Router();
-router.use(BodyParser.json());
 
 function validateTime(incomingTime) {
   if (incomingTime === undefined) {
@@ -12,7 +10,7 @@ function validateTime(incomingTime) {
   const secondsSinceEpoch = Math.round(Date.now() / 1000);
   const incomingTimeInt = Number.parseInt(incomingTime, 10);
   if (Number.isNaN(incomingTimeInt)) {
-    throw new Error('NaN');
+    return incomingTimeInt;
   }
   if (secondsSinceEpoch - 300 < incomingTimeInt && incomingTimeInt < secondsSinceEpoch + 300) {
     return true;
@@ -20,8 +18,7 @@ function validateTime(incomingTime) {
   return false;
 }
 
-// todo. add error logging for bad parseInt
-router.all('*', async (request, response, next) => {
+module.exports = async (request, response, next) => {
   const incomingTimes = [];
 
   Object.keys(request.query)
@@ -64,6 +61,6 @@ router.all('*', async (request, response, next) => {
       next();
     }
   }
-});
+};
 
-module.exports = router;
+// module.exports = router;

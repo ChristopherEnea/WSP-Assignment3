@@ -1,8 +1,3 @@
-const express = require('express');
-const BodyParser = require('body-parser');
-
-const router = express.Router();
-router.use(BodyParser.json());
 const path = require('path');
 const winston = require('winston');
 
@@ -15,7 +10,7 @@ const logger = winston.createLogger({
   ],
 });
 
-module.exports = router.all('*', async (request, response, next) => {
+module.exports = async (request, response, next) => {
   logger.log('info', 'New request', {
     time: Math.round(Date.now() / 1000),
     verb: request.method,
@@ -26,4 +21,4 @@ module.exports = router.all('*', async (request, response, next) => {
     DateValidation: request.dateValidation,
   });
   next();
-});
+};

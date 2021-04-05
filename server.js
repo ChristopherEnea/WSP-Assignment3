@@ -8,18 +8,20 @@ const ErrorOnDelete = require('./middleware/ErrorOnDelete');
 const DateValidation = require('./middleware/DateValidation');
 const fiftyfifty = require('./middleware/5050');
 const Logger = require('./middleware/Logger');
+const Error = require('./middleware/Error');
 
 dotenv.config();
 
 const app = Express();
 
 app.use(BodyParser.json());
-app.use('*', ErrorOnDelete);
-app.use('*', DateValidation);
-app.use('*', Logger);
+app.use(ErrorOnDelete);
+app.use(DateValidation);
+app.use(Logger);
 app.use('/users', UserRoutes);
 app.use('/products', ProductRoutes);
 app.use('/', fiftyfifty);
+app.use(Error);
 
 (async () => {
   await Mongoose.connect(process.env.CONNECTION_STRING, {
