@@ -1,7 +1,4 @@
-const express = require('express');
 const StatusCodes = require('http-status-codes');
-
-const router = express.Router();
 
 function validateTime(incomingTime) {
   if (incomingTime === undefined) {
