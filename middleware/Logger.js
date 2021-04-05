@@ -13,7 +13,7 @@ router.all('*', async (request, response, next) => {
   log.body = request.body;
   log.query = request.query;
   log.headers = request.headers;
-  log.DateValidation = request.DateValidation;
+  log.DateValidation = request.dateValidation;
   console.log(log);
   next();
 });

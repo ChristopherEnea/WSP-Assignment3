@@ -14,14 +14,13 @@ function validateTime(incomingTime) {
   if (Number.isNaN(incomingTimeInt)) {
     throw new Error('NaN');
   }
-  if (secondsSinceEpoch - 5 < incomingTimeInt && incomingTimeInt < secondsSinceEpoch + 5) {
+  if (secondsSinceEpoch - 300 < incomingTimeInt && incomingTimeInt < secondsSinceEpoch + 300) {
     return true;
   }
   return false;
 }
 
 // todo. add error logging for bad parseInt
-// todo. remove console.logs
 router.all('*', async (request, response, next) => {
   const incomingTimes = [];
 
@@ -37,25 +36,33 @@ router.all('*', async (request, response, next) => {
     });
 
   if (request.header('date-validation')) {
-    request.header('date-validation').split(', ').forEach((item) => incomingTimes.push(item));
+    request.header('date-validation')
+      .split(', ')
+      .forEach((item) => incomingTimes.push(item));
   }
 
   if (incomingTimes.length === 0) {
-    return response.sendStatus(StatusCodes.UNAUTHORIZED);
-  } if (incomingTimes.length === 1) {
-    if (!validateTime(incomingTimes)) {
-      return response.sendStatus(StatusCodes.UNAUTHORIZED);
+    // no time inputs
+    response.sendStatus(StatusCodes.UNAUTHORIZED);
+  } else if (incomingTimes.length > 0) {
+    const matching = incomingTimes.every((item) => {
+      if (item !== incomingTimes[0]) {
+        return false;
+      }
+      return true;
+    });
+    const inRange = incomingTimes.every((item) => {
+      if (!validateTime(item)) {
+        return false;
+      }
+      return true;
+    });
+    if (!matching || !inRange) {
+      response.sendStatus(StatusCodes.UNAUTHORIZED);
+    } else {
+      request.dateValidation = incomingTimes;
+      next();
     }
-    request.DateValidation = incomingTimes;
-    next();
-  }
-  incomingTimes.forEach((item) => {
-    if (item !== incomingTimes[0]) {
-      return response.sendStatus(StatusCodes.UNAUTHORIZED);
-    }
-  });
-  if (!validateTime(incomingTimes[0])) {
-    return response.sendStatus(StatusCodes.UNAUTHORIZED);
   }
 });
 
